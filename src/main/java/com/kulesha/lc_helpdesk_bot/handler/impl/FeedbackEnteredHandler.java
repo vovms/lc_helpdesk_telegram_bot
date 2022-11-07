@@ -9,36 +9,33 @@ import com.kulesha.lc_helpdesk_bot.service.UserSessionService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SendFeedbackHandler extends UserRequestHandler {
-
-    private static String command = "/sendfeedback";
+public class FeedbackEnteredHandler extends UserRequestHandler {
 
     private final TelegramService telegramService;
+//    private final KeyboardHelper keyboardHelper;
     private final UserSessionService userSessionService;
 
-    public SendFeedbackHandler(TelegramService telegramService, UserSessionService userSessionService) {
+    public FeedbackEnteredHandler(TelegramService telegramService, UserSessionService userSessionService) {
         this.telegramService = telegramService;
         this.userSessionService = userSessionService;
     }
 
     @Override
     public boolean isApplicable(UserRequest request) {
-        return isCommand(request.getUpdate(), command);
+        return isTextMessage(request.getUpdate())
+                && ConversationState.WAITING_FOR_FEEDBACK.equals(request.getUserSession().getState());
     }
 
     @Override
     public void handle(UserRequest userRequest) {
-
-        UserSession userSession = userRequest.getUserSession();
-        userSession.setState(ConversationState.WAITING_FOR_FEEDBACK);
-        userSessionService.saveSession(userSession.getChatId(), userSession);
-
-        telegramService.sendMessage(userRequest.getChatId(),
-                "Напишіть ваш відгук/побажання!");
+        telegramService.sendMessage(userRequest.getChatId(),"Дякую, ваш відгук було передано авторам \uD83D\uDE09");
+        UserSession session = userRequest.getUserSession();
+        session.setState(ConversationState.CONVERSATION_STARTED);
+        userSessionService.saveSession(userRequest.getChatId(), session);
     }
 
     @Override
     public boolean isGlobal() {
-        return true;
+        return false;
     }
 }

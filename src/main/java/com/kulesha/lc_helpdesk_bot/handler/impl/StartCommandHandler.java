@@ -3,6 +3,7 @@ package com.kulesha.lc_helpdesk_bot.handler.impl;
 import com.kulesha.lc_helpdesk_bot.handler.UserRequestHandler;
 import com.kulesha.lc_helpdesk_bot.model.UserRequest;
 import com.kulesha.lc_helpdesk_bot.service.TelegramService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
